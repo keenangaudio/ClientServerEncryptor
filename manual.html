@@ -1,0 +1,143 @@
+<DOCTYPE HTML>
+<!--OPEN THIS IN A BROWSER ON A MAC ITS REAL NICE, otherwise i think the font is icky-->
+<html>
+<head>
+    <style>
+    h1 {
+        font-family: avenir;
+    }
+    h3 {
+        font-family: avenir;
+    }
+    body {
+        font-family: avenir;
+
+    }
+    #reg {
+        font-family: avenir;
+    }
+    .column {
+        float: left;
+        width: 50%;
+    }
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    @media screen and (max-width: 875px) {
+        .column {
+            width: 100%;
+        }
+    }
+    </style>
+</head>
+<!--CONFIGURATION-->
+<h1>Configuration</h1>
+<body>
+The only nessecary setting to change in the code, is the port number, it is only necessary if your machines are using port 12345.<br>Lines referenced by [fileName:lineNumber]
+<ul>
+<li> [serverMain:37]  :  #define MYPORTNUM 12345</li>
+<li> [clientMain:38]  :  #define MYPORTNUM 12345</li>
+</ul>
+There are several #define statements for different DEBUG outputs, but they only make the output cluttered.
+</body>
+
+<!--COMPILATION-->
+<h1>Compilation</h1>
+<body>
+Regular compilation should work for client,
+<br>
+<pre style="margin-left:5em;background:lightgrey;margin-right:5em;">g++ -o <i>outputName</i> clientMain.cpp</pre>
+However, the server makes use of some c++14 -only syntax so the following command should be used. as well it requires two extra files to be in the same folder, encryptor.cpp and encryptor.h
+<br>
+<pre style="margin-left:5em;background:lightgrey;margin-right:5em;">g++ -std=c++14 -o <i>outputName</i> serverMain.cpp encryptor.cpp</pre>
+*These two file can be compiled and run on separate machines.
+</body>
+
+<!--USAGE-->
+<h1>Usage</h1>
+<div class="row">
+    <div class="column">
+        <body>
+            <h3>Server</h3>
+            Takes arguments to determine hashing algorithm. This of course means the server must be quit and run again to change the hashing algorithm.
+            <pre style="margin-left:5em;background:lightgrey;margin-right:5em;">./<i>serverOutputName</i> [-seq -sum -chksum] </pre>
+
+            You will see an output that looks something like the following:
+            <br>
+            <pre style="margin-left:5em;background:lightgrey;margin-right:5em;">Server started
+
+listening on port 12345...</pre>
+
+            The server will wait for a client to connect, then print:
+            <pre style="margin-left:5em;background:lightgrey;margin-right:5em;">created baby server...</pre>
+            This signifies a child process was created and is handling the connected client.
+            Later you'll see what the server is recieving.
+            <br>
+            <br>
+            <br>
+            <br>
+            <b>Basically any input the user gives that isn't exactly what the program is expecting, will make the whole thing break. </b>
+            <br>
+            <br>
+        </body>
+    </div>
+    <div class="column">
+        <body>
+            <h3>Client</h3>
+            Takes arguments to get server address. Can be either a numerical IPv4 (-ip) or the hostname (-h).
+            <pre style="margin-left:5em;background:lightgrey;margin-right:5em;">./<i>clientOutputName</i> -ip [###.###.###.###] </pre>
+            or
+            <pre style="margin-left:5em;background:lightgrey;margin-right:5em;">./<i>clientOutputName</i> -h [<i>www.example.com</i>] </pre>
+
+            You will see an output that looks something like the following, user input marked red, server response marked green
+            <br>
+            <pre style="margin-left:5em;background:lightgrey;margin-right:5em;">ready to send message to server
+
+Please choose from the following selections:
+ 1 - Enter a word
+ 0 - Exit program
+Your desired menu selection? <span style="color: red">1</span>
+Enter your tweet: <span style="color: red">hey</span>
+Encrypted tweet: <span style="color: green">0x0146</span>  </pre>
+
+            you can then input either 0 or 1, anything else will crash the server
+            and close the client.<br>
+            After that, you can type in either a sentence of standard tweet length
+            (&lt; 140 characters) or the exact encryption you recieved previously from the server. This means include the 0x. Sometimes pasting numbers into the console will crash the program, I didn't error check for invisible characters.
+        </body>
+    </div>
+</div>
+
+<!--FEATURE-->
+<h2>Bonus Feature!</h2>
+<body>
+    On the client side, when the client prompts user for input, (1 or 0), the user can also type 1 followed by a space, followed by the string to be processed. that works too.
+    Also, My hash decodes the trump tweet for bonus, i just hardcoded the word into the dictionary so my code could always decode it, rather than re-hashing a list of all words ever, every time the server is launched.
+</body>
+
+<!--MY HASH-->
+<h2>My Hash</h2>
+<body>
+    My hash is just the internet checksum with linear collision detection, so pretty simple, and to be honest not a very good hash, BUT it has the benifit of only making me implement one extra hash to also get the bonus. So I did that.
+    The internet checksum, by the way, is just 16-bit one's compliment addition for every two characters in a word, with the final sum subtracted from 0xffff.
+</body>
+
+<!--TCP/UDP-->
+<h1>UDP/TCP</h1>
+<body>
+    I chose to use TCP rather than UDP mostly for ease of use, TCP does all of the heavy lifting and gives access to a very reliable stream of data. If i had used UDP I would have had to make sure i was getting all of the information the server was sending and vice versa. Using TCP made my code shorter and less complex than it would have been with UDP, no doubt. The biggest downside of using TCP would be the time and overhead, neither are of any concern with a project of this scale, so it was the obvious choice.<br>PS. TCP will work on any network, as long as the packet loss isnt 100% (so not a network), whereas UDP will really struggle, so TCP is pretty portable. TCP would work over a spahgetti noodle
+</body>
+<!--CONCLUSION-->
+<h1>Conclusion</h1>
+<body>
+I did all of this on my personal laptop, running MacOS 10.14, running from Xcode.
+<br><br>
+Also I implemented the internent checksum as my hash, which i think accounts for some of the bonus marks,
+
+<br><br><br><br><br><br>
+PS. I'm really proud of this manual too, I hope you enjoyed it again. Also, this program actually works so thats nice.
+<br><br>
+</body>
+</html>
